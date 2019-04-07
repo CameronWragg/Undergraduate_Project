@@ -1,0 +1,21 @@
+<PackageManifest Version="2.0.0" xmlns="http://schemas.microsoft.com/developer/vsx-schema/2011">
+  <Metadata>
+    <Identity Id="DataCollector.9dc6275b-9a9b-4899-8abd-c486f5fc8166" Version="1.0" Language="en-US" Publisher="Cameron Wragg" />
+    <DisplayName>DataCollector</DisplayName>
+    <Description xml:space="preserve">Collects Syntactical Error Data For Research Purposes.</Description>
+  </Metadata>
+  <Installation>
+    <InstallationTarget Id="Microsoft.VisualStudio.Community" Version="[15.0, 16.0)" />
+  </Installation>
+  <Dependencies>
+    <Dependency Id="Microsoft.Framework.NDP" DisplayName="Microsoft .NET Framework" Version="[4.5,)" />
+    <Dependency Id="Microsoft.VisualStudio.MPF.15.0" DisplayName="Visual Studio MPF 15.0" Version="[15.0]" />
+  </Dependencies>
+  <Prerequisites>
+    <Prerequisite Id="Microsoft.VisualStudio.Component.CoreEditor" Version="[15.0,16.0)" DisplayName="Visual Studio core editor" />
+  </Prerequisites>
+  <Assets>
+    <Asset Type="Microsoft.VisualStudio.MefComponent" Path="DataCollector.dll" />
+    <Asset Type="Microsoft.VisualStudio.VsPackage" Path="DataCollector.pkgdef" />
+  </Assets>
+</PackageManifest>
