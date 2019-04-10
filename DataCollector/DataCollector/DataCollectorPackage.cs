@@ -47,7 +47,7 @@ namespace DataCollector
         /// </summary>
         public const string PackageGuidString = "7cec100b-e144-4764-83d3-4522060059e5";
 
-        public bool Enabled = true;
+        public static bool Enabled = true;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="DataCollectorPackage"/> class.
@@ -71,19 +71,20 @@ namespace DataCollector
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
-            string projectId = "cmp3060m-csw";
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
-            await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
+            //string projectId = "cmp3060m-csw";
             // Error Handler Init
-            ErrorHandler.Initialize(this);
+            await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
             await EnableDisableDataCollectorCommand.InitializeAsync(this);
             await RDTExplWindow.InitializeAsync(this);
             IVsRunningDocumentTable rdt = (IVsRunningDocumentTable)
                 await GetServiceAsync(typeof(SVsRunningDocumentTable));
             Assumes.Present(rdt);
             rdt.AdviseRunningDocTableEvents(RDTExplWindow.mRDTExplWindow, out RDTExplWindow.rdtCookie);
-            CloudAuth.AuthImplicit(projectId);
+            //CloudAuth.AuthImplicit(projectId);
+            ErrorHandler.Initialize(this);
+            ErrorHandler.AddMessage("Data Collector Extension Running.");
         }
 
         #endregion

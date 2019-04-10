@@ -100,29 +100,24 @@ namespace DataCollector
 
         public int OnBeforeSave(uint docCookie)
         {
-            DataCollectorPackage enable = new DataCollectorPackage();
-            if (enable.Enabled != false)
+            ErrorHandler.AddMessage("Before Save Handler Triggered");
+            ErrorHandler.ClearList();
+            list.Clear();
+            string message = ""; //ErrorHandler.GetError();
+            int i = errList.ErrorItems.Count;
+            if (i != 0)
             {
-                ErrorHandler.AddMessage("Before Save Handler Triggered");
-                ErrorHandler.ClearList();
-                list.Clear();
-                string message = ""; //ErrorHandler.GetError();
-                int i = errList.ErrorItems.Count;
-                if (i != 0)
+                for (int j = 1; j <= i; j++)
                 {
-                    for (int j = 1; j <= i; j++)
-                    {
-                        list.Add(errList.ErrorItems.Item(j).Description.ToString());
-                        message += errList.ErrorItems.Item(j).Description.ToString();
-                        JsnToFile(errList.ErrorItems.Item(j).Description.ToString(), errList.ErrorItems.Item(j).ErrorLevel.ToString(), errList.ErrorItems.Item(j).Line.ToString());
-                    }
+                    list.Add(errList.ErrorItems.Item(j).Description.ToString());
+                    message += errList.ErrorItems.Item(j).Description.ToString();
+                    string linePath = errList.ErrorItems.Item(j).FileName;
+                    int errLine = errList.ErrorItems.Item(j).Line;
+                    string line = File.ReadLines(linePath).Skip(errLine - 1).Take(1).First();
+                    JsnToFile(errList.ErrorItems.Item(j).Description.ToString(), errList.ErrorItems.Item(j).ErrorLevel.ToString(), line);
                 }
-                ErrorHandler.AddWarning(message);
             }
-            else
-            {
-                ErrorHandler.AddMessage($"DataCollector Enabled? {enable.Enabled.ToString()}");
-            }
+            ErrorHandler.AddMessage(message);
             return VSConstants.S_OK;
         }
 

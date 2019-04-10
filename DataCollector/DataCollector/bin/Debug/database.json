@@ -1,3 +1,7 @@
 {"id":"<DateTime,RandNo>", "description":"<description>", "errorlevel":"<errorlevel>", "line":"<line>"}
 {"id":"03:52:47842","description":"; expected","errorlevel":"vsBuildErrorLevelHigh","line":"15"}
 {"id":"03:52:48218","description":"The variable 'j' is declared but never used","errorlevel":"vsBuildErrorLevelMedium","line":"17"}
+{"id":"05:25:29377","description":"; expected","errorlevel":"vsBuildErrorLevelHigh","line":"using System;"}
+{"id":"05:25:29120","description":"The variable 'j' is declared but never used","errorlevel":"vsBuildErrorLevelMedium","line":"using System.Collections.Generic;"}
+{"id":"05:30:38848","description":"; expected","errorlevel":"vsBuildErrorLevelHigh","line":"            Console.WriteLine("Hello World!")"}
+{"id":"05:30:38591","description":"The variable 'j' is declared but never used","errorlevel":"vsBuildErrorLevelMedium","line":"            int j;"}
