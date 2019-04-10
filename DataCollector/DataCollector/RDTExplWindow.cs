@@ -114,7 +114,8 @@ namespace DataCollector
                     string linePath = errList.ErrorItems.Item(j).FileName;
                     int errLine = errList.ErrorItems.Item(j).Line;
                     string line = File.ReadLines(linePath).Skip(errLine - 1).Take(1).First();
-                    JsnToFile(errList.ErrorItems.Item(j).Description.ToString(), errList.ErrorItems.Item(j).ErrorLevel.ToString(), line);
+                    string encryptedLine = EncryptCode(line);
+                    JsnToFile(errList.ErrorItems.Item(j).Description.ToString(), errList.ErrorItems.Item(j).ErrorLevel.ToString(), encryptedLine);
                 }
             }
             ErrorHandler.AddMessage(message);
@@ -128,6 +129,39 @@ namespace DataCollector
             StreamWriter fle = File.AppendText("database.json");
             fle.Write("\r\n{\"id\":\"" + $"{DateTime.Now.ToLongTimeString()}{rid}" + "\",\"description\":\"" + $"{description}" + "\",\"errorlevel\":\"" + $"{errorlevel}" + "\",\"line\":\"" + $"{line}" + "\"}");
             fle.Close();
+        }
+
+        public static string EncryptCode(string line)
+        {
+            bool fileExists = File.Exists("codenc.txt");
+            bool encFileExists = File.Exists("codencF.txt");
+            string plainTxt = "codenc.txt";
+            string encTxt = "codencF.txt";
+            if (fileExists == true)
+            {
+                File.Delete(plainTxt);
+            }
+            StreamWriter fle = File.CreateText(plainTxt);
+            fle.Write(line);
+            fle.Close();
+
+            if (encFileExists == true)
+            {
+                File.Delete(encTxt);
+            }
+
+            FileStream fleStr = new FileStream(encTxt, FileMode.Create);
+            FileInfo fleInf = new FileInfo(plainTxt);
+            PgpEncKeys pgpEncKeys = new PgpEncKeys("recipient_pgp_public.txt", "pgp_private.txt", "unioflincoln");
+            Encryption pgpEncryption = new Encryption(pgpEncKeys);
+            pgpEncryption.EncryptSign(fleStr, fleInf);
+            fleStr.Close();
+
+            string rtn = File.ReadAllText(encTxt);
+            //Commented out for testing purposes.
+            //File.Delete(encTxt);
+            //File.Delete(plainTxt);
+            return rtn;
         }
     }
 }

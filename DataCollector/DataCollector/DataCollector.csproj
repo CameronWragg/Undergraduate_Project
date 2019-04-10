@@ -57,6 +57,7 @@
     <Compile Include="CloudAuth.cs" />
     <Compile Include="DataCollectorPackage.cs" />
     <Compile Include="EnableDisableDataCollectorCommand.cs" />
+    <Compile Include="Encryption.cs" />
     <Compile Include="ErrorHandler.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Properties\Settings.Designer.cs">
@@ -87,6 +88,9 @@
     <Content Include="Resources\EnableDisableDataCollectorCommand.png" />
   </ItemGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\packages\BouncyCastle.Crypto.1.8.5\lib\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="EnvDTE, Version=8.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a">
       <EmbedInteropTypes>False</EmbedInteropTypes>
     </Reference>
