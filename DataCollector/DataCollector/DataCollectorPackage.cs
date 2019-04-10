@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
+using Microsoft;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.OLE.Interop;
 using Microsoft.VisualStudio.Shell;
@@ -46,6 +47,8 @@ namespace DataCollector
         /// </summary>
         public const string PackageGuidString = "7cec100b-e144-4764-83d3-4522060059e5";
 
+        public bool Enabled = true;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="DataCollectorPackage"/> class.
         /// </summary>
@@ -68,12 +71,19 @@ namespace DataCollector
         /// <returns>A task representing the async work of package initialization, or an already completed task if there is none. Do not return null from this method.</returns>
         protected override async Task InitializeAsync(CancellationToken cancellationToken, IProgress<ServiceProgressData> progress)
         {
+            string projectId = "cmp3060m-csw";
             // When initialized asynchronously, the current thread may be a background thread at this point.
             // Do any initialization that requires the UI thread after switching to the UI thread.
             await this.JoinableTaskFactory.SwitchToMainThreadAsync(cancellationToken);
-            await EnableDisableDataCollectorCommand.InitializeAsync(this);
             // Error Handler Init
             ErrorHandler.Initialize(this);
+            await EnableDisableDataCollectorCommand.InitializeAsync(this);
+            await RDTExplWindow.InitializeAsync(this);
+            IVsRunningDocumentTable rdt = (IVsRunningDocumentTable)
+                await GetServiceAsync(typeof(SVsRunningDocumentTable));
+            Assumes.Present(rdt);
+            rdt.AdviseRunningDocTableEvents(RDTExplWindow.mRDTExplWindow, out RDTExplWindow.rdtCookie);
+            CloudAuth.AuthImplicit(projectId);
         }
 
         #endregion

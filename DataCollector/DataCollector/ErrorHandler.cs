@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
+using EnvDTE;
 
 namespace DataCollector
 {
@@ -11,6 +13,7 @@ namespace DataCollector
     internal static class ErrorHandler
     {
         private static ErrorListProvider _errorListProvider;
+        //private static StringCollection tl;
 
         public static void Initialize(IServiceProvider serviceProvider)
         {
@@ -40,6 +43,25 @@ namespace DataCollector
         public static void AddMessage(string message)
         {
             AddTask(message, TaskErrorCategory.Message);
+        }
+
+        public static string GetError()
+        {
+            string rtn = "";
+            //tl = _errorListProvider.Subcategories;
+            //int tlsz = tl.Count;
+            //string[] strarray = new string[tlsz];
+            //tl.CopyTo(strarray, 0);
+            //for (int i = 0; i < strarray.Length; i++)
+            //{
+            //    rtn += strarray[i];
+            //}
+            return rtn;
+        }
+
+        public static void ClearList()
+        {
+            _errorListProvider.Tasks.Clear();
         }
     }
 }

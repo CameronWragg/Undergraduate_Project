@@ -58,15 +58,21 @@ namespace DataCollector
             // Switch to the main thread - the call to AddCommand in EnableDisableDataCollectorCommand's constructor requires
             // the UI thread.
             await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(package.DisposalToken);
-
+            DataCollectorPackage enable = new DataCollectorPackage
+            {
+                Enabled = true
+            };
+            ErrorHandler.AddMessage("Data Collector Extension Running.");
             OleMenuCommandService commandService = await package.GetServiceAsync((typeof(IMenuCommandService))) as OleMenuCommandService;
             Instance = new EnableDisableDataCollectorCommand(package, commandService);
+
         }
 
         /// MENU EXECUTION ADDED
         private void Execute(object sender, EventArgs e)
         {
             ThreadHelper.ThrowIfNotOnUIThread();
+            DataCollectorPackage enable = new DataCollectorPackage();
             Settings.Default.EnableDataCollector = !Settings.Default.EnableDataCollector;
             Settings.Default.Save();
             var command = sender as MenuCommand;
@@ -75,9 +81,11 @@ namespace DataCollector
             switch (Settings.Default.EnableDataCollector)
             {
                 case true:
+                    enable.Enabled = true;
                     ErrorHandler.AddMessage("Data Collector Extension Running.");
                     break;
                 case false:
+                    enable.Enabled = false;
                     ErrorHandler.AddWarning("You have disabled the Data Collector Extension. Please consider re-enabling.");
                     break;
                 default:

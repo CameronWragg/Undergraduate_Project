@@ -1,0 +1,3 @@
+{"id":"<DateTime,RandNo>", "description":"<description>", "errorlevel":"<errorlevel>", "line":"<line>"}
+{"id":"03:52:47842","description":"; expected","errorlevel":"vsBuildErrorLevelHigh","line":"15"}
+{"id":"03:52:48218","description":"The variable 'j' is declared but never used","errorlevel":"vsBuildErrorLevelMedium","line":"17"}

@@ -3,10 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.IO;
 using Microsoft.VisualStudio;
 using Microsoft.VisualStudio.Shell;
 using Microsoft.VisualStudio.Shell.Interop;
+using Microsoft.VisualStudio.Services;
 using EnvDTE;
+using EnvDTE80;
+using Task = System.Threading.Tasks.Task;
 
 namespace DataCollector
 {
@@ -14,22 +18,47 @@ namespace DataCollector
     {
         #region Members
 
-        private RDTExplWindow mRDTExplWindow;
-        private DTE mDte;
+        public static RDTExplWindow mRDTExplWindow;
+        public static ErrorList errList;
+        private static DTE mDte;
+        private static DTE2 eDte;
+        public static List<string> list = new List<string>();
 
-        public delegate void OnBeforeSaveHandler(object sender, Document document);
-        public event OnBeforeSaveHandler BeforeSave;
+        //public delegate void OnBeforeSaveHandler(object sender, Document document);
+        //public event OnBeforeSaveHandler BeforeSave;
+
+        public static uint rdtCookie;
 
         #endregion
 
         #region Constructor
 
-        public RDTExplWindow(Package aPackage)
+        //public RDTExplWindow(Package aPackage)
+        //{
+        //    ThreadHelper.ThrowIfNotOnUIThread();
+        //    mDte = (DTE)Package.GetGlobalService(typeof(DTE));
+        //    mRDTExplWindow = new RDTExplWindow(aPackage);
+        //    mRDTExplWindow.Advise(this);
+        //}
+
+        public static async Task InitializeAsync(AsyncPackage aPackage)
         {
-            ThreadHelper.ThrowIfNotOnUIThread();
+            // Switch to the main thread - the call to AddCommand in EnableDisableDataCollectorCommand's constructor requires
+            // the UI thread.
+            await ThreadHelper.JoinableTaskFactory.SwitchToMainThreadAsync(aPackage.DisposalToken);
             mDte = (DTE)Package.GetGlobalService(typeof(DTE));
-            mRDTExplWindow = new RDTExplWindow(aPackage);
-            mRDTExplWindow.Advise(this);
+            eDte = (DTE2)Package.GetGlobalService(typeof(DTE));
+            mRDTExplWindow = new RDTExplWindow();
+            Instance = new RDTExplWindow();
+            errList = eDte.ToolWindows.ErrorList;
+            errList.ShowMessages = false;
+            errList.ShowWarnings = false;
+        }
+
+        public static RDTExplWindow Instance 
+        {
+            get;
+            private set;
         }
 
         #endregion
@@ -71,7 +100,39 @@ namespace DataCollector
 
         public int OnBeforeSave(uint docCookie)
         {
+            DataCollectorPackage enable = new DataCollectorPackage();
+            if (enable.Enabled != false)
+            {
+                ErrorHandler.AddMessage("Before Save Handler Triggered");
+                ErrorHandler.ClearList();
+                list.Clear();
+                string message = ""; //ErrorHandler.GetError();
+                int i = errList.ErrorItems.Count;
+                if (i != 0)
+                {
+                    for (int j = 1; j <= i; j++)
+                    {
+                        list.Add(errList.ErrorItems.Item(j).Description.ToString());
+                        message += errList.ErrorItems.Item(j).Description.ToString();
+                        JsnToFile(errList.ErrorItems.Item(j).Description.ToString(), errList.ErrorItems.Item(j).ErrorLevel.ToString(), errList.ErrorItems.Item(j).Line.ToString());
+                    }
+                }
+                ErrorHandler.AddWarning(message);
+            }
+            else
+            {
+                ErrorHandler.AddMessage($"DataCollector Enabled? {enable.Enabled.ToString()}");
+            }
             return VSConstants.S_OK;
+        }
+
+        public static void JsnToFile(string description, string errorlevel, string line)
+        {
+            Random r = new Random();
+            string rid = r.Next(1, 1025).ToString();
+            StreamWriter fle = File.AppendText("database.json");
+            fle.Write("\r\n{\"id\":\"" + $"{DateTime.Now.ToLongTimeString()}{rid}" + "\",\"description\":\"" + $"{description}" + "\",\"errorlevel\":\"" + $"{errorlevel}" + "\",\"line\":\"" + $"{line}" + "\"}");
+            fle.Close();
         }
     }
 }
