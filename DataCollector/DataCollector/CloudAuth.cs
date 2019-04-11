@@ -1,14 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Diagnostics;
-using System.Net.Http;
-using Google.Apis.Auth.OAuth2;
-using Google.Apis.Services;
-using Google.Apis.Storage.v1;
+﻿using Google.Apis.Auth.OAuth2;
 using Google.Cloud.Storage.V1;
 
 namespace DataCollector

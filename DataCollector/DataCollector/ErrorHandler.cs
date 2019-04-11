@@ -1,15 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using Microsoft.VisualStudio.Shell;
-using EnvDTE;
 
 namespace DataCollector
 {
-    // Class for enabling the extension to send Errors/Warnings/Messages to the Error List.
     internal static class ErrorHandler
     {
         private static ErrorListProvider _errorListProvider;
@@ -45,19 +38,19 @@ namespace DataCollector
             AddTask(message, TaskErrorCategory.Message);
         }
 
-        public static string GetError()
-        {
-            string rtn = "";
-            //tl = _errorListProvider.Subcategories;
-            //int tlsz = tl.Count;
-            //string[] strarray = new string[tlsz];
-            //tl.CopyTo(strarray, 0);
-            //for (int i = 0; i < strarray.Length; i++)
-            //{
-            //    rtn += strarray[i];
-            //}
-            return rtn;
-        }
+        //public static string GetError()
+        //{
+        //    string rtn = "";
+        //    //tl = _errorListProvider.Subcategories;
+        //    //int tlsz = tl.Count;
+        //    //string[] strarray = new string[tlsz];
+        //    //tl.CopyTo(strarray, 0);
+        //    //for (int i = 0; i < strarray.Length; i++)
+        //    //{
+        //    //    rtn += strarray[i];
+        //    //}
+        //    return rtn;
+        //}
 
         public static void ClearList()
         {
